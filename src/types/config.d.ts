@@ -1,3 +1,5 @@
+import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
+
 import { ENV_MODE } from '@/constants';
 
 export type TConfig = {
@@ -11,4 +13,5 @@ export type TConfig = {
         databaseName: string;
         authSource: string;
     };
+    typesense: ConfigurationOptions;
 };

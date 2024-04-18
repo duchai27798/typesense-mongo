@@ -18,6 +18,19 @@ export class Configuration {
                     databaseName: process.env['MONGO_BD_NAME'],
                     authSource: 'admin',
                 },
+                typesense: {
+                    nodes: [
+                        {
+                            host: process.env['TYPESENSE_HOST'],
+                            port: parseInt(process.env['TYPESENSE_PORT']),
+                            protocol: process.env['TYPESENSE_PROTOCOL'],
+                        },
+                    ],
+                    apiKey: process.env['TYPESENSE_API_KEY'],
+                    logLevel: 'trace',
+                    retryIntervalSeconds: 2,
+                    timeoutSeconds: 4,
+                },
             };
         }
         return Configuration._config;

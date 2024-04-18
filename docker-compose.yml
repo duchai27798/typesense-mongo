@@ -34,6 +34,16 @@ services:
             - typesence_mongo_network
         volumes:
             - typesence_mongo:/data/db
+    typesense:
+        image: typesense/typesense:27.0.rc2
+        container_name: typesense-data-search
+        ports:
+            - '${TYPESENSE_PORT}:8108'
+        volumes:
+            - typesense-data:/data
+        command: '--data-dir /data --api-key=${TYPESENSE_API_KEY} --enable-cors'
+        networks:
+            - typesence_mongo_network
 #    api:
 #        container_name: beat_layoff_api
 #        build:
@@ -56,4 +66,5 @@ services:
 #        command: 'yarn start:build'
 
 volumes:
+    typesense-data:
     typesence_mongo:
