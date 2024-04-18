@@ -2,7 +2,9 @@ import { ValidationPipe, VersioningType } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { Configuration } from '@/config/configuration';
+import { ENV_MODE } from '@/constants';
 import { LoggerServerHelper } from '@/helpers';
+import { setupSwagger } from '@/setup-swagger';
 
 import { AppModule } from './app.module';
 
@@ -29,6 +31,10 @@ async function bootstrap() {
 
     // validate input before jump into controller
     app.useGlobalPipes(new ValidationPipe());
+
+    if (Configuration.instance.env !== ENV_MODE.PRO) {
+        setupSwagger(app);
+    }
 
     await app.listen(Configuration.instance.port);
 }

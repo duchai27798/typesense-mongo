@@ -21,6 +21,7 @@ module.exports = {
     rules: {
         'prettier/prettier': ['error'],
         'import/no-unresolved': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
         'import/extensions': 'off', // Avoid missing file extension errors, TypeScript already provides a similar feature
         'react/function-component-definition': 'off', // Disable Airbnb's specific function type
         'react/destructuring-assignment': 'off', // Vscode doesn't support automatically destructuring, it's a pain to add a new variable
