@@ -10,6 +10,7 @@
         "build": "nest build",
         "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
         "start": "nest start",
+        "start:local": "NODE_ENV=local nest start --watch",
         "start:dev": "nest start --watch",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
@@ -26,9 +27,13 @@
         "@nestjs/core": "^9.0.0",
         "@nestjs/mongoose": "^10.0.6",
         "@nestjs/platform-express": "^9.0.0",
+        "class-transformer": "^0.5.1",
+        "class-validator": "^0.14.1",
         "mongoose": "^8.3.2",
+        "morgan": "^1.10.0",
         "reflect-metadata": "^0.1.13",
-        "rxjs": "^7.2.0"
+        "rxjs": "^7.2.0",
+        "winston": "^3.13.0"
     },
     "devDependencies": {
         "@nestjs/cli": "^9.0.0",
@@ -37,8 +42,10 @@
         "@types/express": "^4.17.13",
         "@types/jest": "29.2.4",
         "@types/mongoose": "^5.11.97",
+        "@types/morgan": "^1.9.9",
         "@types/node": "18.11.18",
         "@types/supertest": "^2.0.11",
+        "@types/winston": "^2.4.4",
         "@typescript-eslint/eslint-plugin": "^5.0.0",
         "@typescript-eslint/parser": "^5.0.0",
         "eslint": "^8.0.1",

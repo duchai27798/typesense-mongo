@@ -16,7 +16,7 @@ export class Configuration {
                     username: process.env['MONGO_USERNAME'],
                     password: process.env['MONGO_PASSWORD'],
                     databaseName: process.env['MONGO_BD_NAME'],
-                    authSource: process.env['MONGO_AUTH_IS_USER'] === 'true' ? process.env['MONGO_BD_NAME'] : 'admin',
+                    authSource: 'admin',
                 },
             };
         }

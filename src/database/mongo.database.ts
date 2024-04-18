@@ -10,7 +10,7 @@ export class MongoDatabase implements MongooseOptionsFactory {
     createMongooseOptions(): MongooseModuleOptions {
         const mongoEnv = Configuration.instance.mongo;
         const urlConnection = `mongodb://${mongoEnv.host}:${mongoEnv.port}/${mongoEnv.databaseName}`;
-        if (Configuration.instance.env === ENV_MODE.DEV) {
+        if (Configuration.instance.env !== ENV_MODE.PRO) {
             mongoose.set('debug', true);
             mongoose.set('debug', { color: true });
         }
