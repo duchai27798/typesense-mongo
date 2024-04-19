@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 
 import { Configuration } from '@/config/configuration';
 import { DatabaseModule } from '@/database/database.module';
+import { ProductModule } from '@/modules/product/product.module';
 import { TypeSenseModule } from '@/modules/type-sense/type-sense.module';
 
 @Module({
@@ -16,6 +17,7 @@ import { TypeSenseModule } from '@/modules/type-sense/type-sense.module';
         TypeSenseModule.forRootSync({
             useFactory: () => Configuration.instance.typesense,
         }),
+        ProductModule,
     ],
 })
 export class AppModule {}
