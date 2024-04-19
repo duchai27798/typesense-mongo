@@ -1,7 +1,7 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsNumber, IsOptional, IsString, Min } from 'class-validator';
-import _ from 'lodash-es';
+import _ from 'lodash';
 import mongoose from 'mongoose';
 
 enum OrderType {

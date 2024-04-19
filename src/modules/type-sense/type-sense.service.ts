@@ -25,10 +25,8 @@ export class TypeSenseService {
     static async register(schema: CollectionCreateSchema) {
         const isExited = this._TypeSenseClient.collections(schema.name).exists();
 
-        if (!!isExited) {
-            await this._TypeSenseClient.collections(schema.name).delete();
+        if (!isExited) {
+            await this._TypeSenseClient.collections().create(schema);
         }
-
-        return await this._TypeSenseClient.collections().create(schema);
     }
 }
