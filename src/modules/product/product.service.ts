@@ -8,14 +8,16 @@ import { Model } from 'mongoose';
 import { ChangeStreamService } from '@/database';
 import { SuccessDto } from '@/dto/core';
 import { Product } from '@/modules/product/schemas/product.schema';
+import { ProductSearchSchema } from '@/modules/product/schemas/product-search.schema';
 import { TProduct } from '@/modules/product/types/product';
+import { TypeSenseService } from '@/modules/type-sense/type-sense.service';
 
 @Injectable()
 export class ProductService extends ChangeStreamService<Product> {
     constructor(@InjectModel(Product.name) private readonly _ProductModel: Model<Product>) {
         super(_ProductModel);
-        this._ModelChangeStream.on('change', (e) => {
-            console.log(e.operationType);
+        this._ModelChangeStream.on('change', async (e) => {
+            await TypeSenseService.syncData(ProductSearchSchema.name, e);
         });
     }
 

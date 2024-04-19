@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ChangeStreamDocument } from 'mongodb';
 import { Client } from 'typesense';
 import { CollectionCreateSchema } from 'typesense/lib/Typesense/Collections';
 import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
@@ -23,10 +24,30 @@ export class TypeSenseService {
     }
 
     static async register(schema: CollectionCreateSchema) {
-        const isExited = this._TypeSenseClient.collections(schema.name).exists();
+        const isExited = await this._TypeSenseClient.collections(schema.name).exists();
 
-        if (!isExited) {
-            await this._TypeSenseClient.collections().create(schema);
+        if (isExited) {
+            await this._TypeSenseClient.collections(schema.name).delete();
+        }
+
+        await this._TypeSenseClient.collections().create(schema);
+    }
+
+    static async syncData(schemaName: string, record: ChangeStreamDocument) {
+        const collection = this._TypeSenseClient.collections(schemaName);
+        switch (record.operationType) {
+            case 'delete':
+                return collection.documents(record.documentKey._id.toString()).delete();
+            case 'update':
+                return collection
+                    .documents(record.documentKey._id.toString())
+                    .update(record.updateDescription.updatedFields);
+            case 'insert':
+                const { _id, ...data } = record.fullDocument;
+                return collection.documents().upsert({
+                    id: _id.toString(),
+                    ...data,
+                });
         }
     }
 }
