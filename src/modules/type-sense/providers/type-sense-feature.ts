@@ -1,4 +1,6 @@
+import { Logger } from '@nestjs/common';
 import { Document } from 'bson';
+import _ from 'lodash';
 import { ChangeStreamDocument } from 'mongodb';
 import { Client } from 'typesense';
 import Collection, { CollectionFieldSchema } from 'typesense/lib/Typesense/Collection';
@@ -11,7 +13,7 @@ export class TypeSenseFeature<TSchema extends Document = Document> implements Se
     private _Collection: Collection<TSchema>;
 
     constructor(client: Client, schema: CollectionCreateSchema) {
-        this.register(client, schema);
+        this.register(client, schema).then();
     }
 
     private async register(client: Client, schema: CollectionCreateSchema) {
@@ -21,16 +23,25 @@ export class TypeSenseFeature<TSchema extends Document = Document> implements Se
             const updatedFieldNames = schema.fields.map((fields) => fields.name);
             const existedFields = (await collection.retrieve()).fields;
             const existedFieldNames = existedFields.map((fields) => fields.name);
-            const deletedFields: CollectionDropFieldSchema[] = existedFields
-                .filter((field) => !updatedFieldNames.includes(field.name) && field.name !== 'id')
-                .map((field) => ({ name: field.name, drop: true }));
             const newFields: CollectionFieldSchema[] = schema.fields.filter(
                 (field) => !existedFieldNames.includes(field.name) && field.name !== 'id',
             );
+            const modifiedFields: CollectionFieldSchema[] = schema.fields.filter((field) => {
+                if (!existedFieldNames.includes(field.name) || field.name === 'id') {
+                    return false;
+                }
+                const oldField = existedFields.find((existedField) => existedField.name === field.name);
+
+                return !!_.find(_.keys(field), (key) => field[key] !== oldField[key]);
+            });
+            const deletedFields: CollectionDropFieldSchema[] = [
+                ...existedFields.filter((field) => !updatedFieldNames.includes(field.name) && field.name !== 'id'),
+                ...modifiedFields,
+            ].map((field) => ({ name: field.name, drop: true }));
 
             if (deletedFields?.length || newFields?.length) {
                 await collection.update({
-                    fields: [...newFields, ...deletedFields],
+                    fields: [...newFields, ...deletedFields, ...modifiedFields],
                 });
             }
         } else {
@@ -42,7 +53,10 @@ export class TypeSenseFeature<TSchema extends Document = Document> implements Se
     async syncData(record: ChangeStreamDocument<TSchema>) {
         switch (record.operationType) {
             case 'delete':
-                await this._Collection.documents(record.documentKey._id.toString()).delete();
+                await this._Collection
+                    .documents(record.documentKey._id.toString())
+                    .delete()
+                    .catch((e) => Logger.error(e));
                 break;
             case 'update':
                 await this._Collection
@@ -50,7 +64,13 @@ export class TypeSenseFeature<TSchema extends Document = Document> implements Se
                     .update(record.updateDescription.updatedFields);
                 break;
             case 'insert':
-                await this._Collection.documents().upsert(record.fullDocument);
+                await this._Collection
+                    .documents()
+                    .upsert({
+                        id: record.documentKey._id,
+                        ...record.fullDocument,
+                    })
+                    .catch((e) => Logger.error(`${record.documentKey._id}: ${e}`));
         }
     }
 }
