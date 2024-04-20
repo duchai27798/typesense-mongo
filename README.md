@@ -1,10 +1,11 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="130" alt="Nest Logo" /></a> <br/> <br/>
-  <a href="https://typesense.org" target="blank"><img src="https://typesense.org/docs/assets/img/mongodb.845c5a69.svg" alt="Typesense" /></a>
+  <img src="https://nestjs.com/img/logo-small.svg" width="130" alt="Nest Logo" /></a> <br/>
+  <img src="https://typesense.org/docs/assets/img/mongodb.845c5a69.svg" alt="Typesense" />
 </p>
 <h4 align="center">
     Build Typesence module for <a href="https://github.com/nestjs/nest">NestJS</a> <br/> Synchronous data from MongoDB & Demonstrate
 </h4>
+
 ## Overview
 
 - [Typesense]() is a fast, typo-tolerant search engine for building delightful search experiences.
