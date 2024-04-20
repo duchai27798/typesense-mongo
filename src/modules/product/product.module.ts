@@ -18,7 +18,7 @@ import { ProductService } from './product.service';
                 schema: ProductSchema,
             },
         ]),
-        TypeSenseModule.forFeature(ProductSearchSchema),
+        TypeSenseModule.forFeature<Product>(ProductSearchSchema),
     ],
 })
 export class ProductModule {}

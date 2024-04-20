@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import _ from 'lodash';
@@ -10,14 +10,17 @@ import { SuccessDto } from '@/dto/core';
 import { Product } from '@/modules/product/schemas/product.schema';
 import { ProductSearchSchema } from '@/modules/product/schemas/product-search.schema';
 import { TProduct } from '@/modules/product/types/product';
-import { TypeSenseService } from '@/modules/type-sense/type-sense.service';
+import { SearchModel } from '@/modules/type-sense/interfaces';
 
 @Injectable()
 export class ProductService extends ChangeStreamService<Product> {
-    constructor(@InjectModel(Product.name) private readonly _ProductModel: Model<Product>) {
+    constructor(
+        @InjectModel(Product.name) private readonly _ProductModel: Model<Product>,
+        @Inject(ProductSearchSchema.name) private readonly _ProductSearchCollection: SearchModel<Product>,
+    ) {
         super(_ProductModel);
         this._ModelChangeStream.on('change', async (e) => {
-            await TypeSenseService.syncData(ProductSearchSchema.name, e);
+            await this._ProductSearchCollection.syncData(e);
         });
     }
 
