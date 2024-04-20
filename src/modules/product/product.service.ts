@@ -7,7 +7,7 @@ import _ from 'lodash';
 import { Model } from 'mongoose';
 
 import { ChangeStreamService } from '@/database';
-import { SuccessDto } from '@/dto/core';
+import { PageOptionsDto, SuccessDto } from '@/dto/core';
 import { CsvUtils } from '@/helpers';
 import { Product } from '@/modules/product/schemas/product.schema';
 import { ProductSearchSchema } from '@/modules/product/schemas/product-search.schema';
@@ -52,5 +52,14 @@ export class ProductService extends ChangeStreamService<Product> {
     async readFileNames() {
         const filenames = fs.readdirSync('data').map((name) => name.replace(new RegExp(/.csv$/), ''));
         return new SuccessDto(null, HttpStatus.OK, filenames);
+    }
+
+    async searchProduct(pageOption: PageOptionsDto) {
+        return this._ProductSearchCollection.documents.search({
+            q: pageOption.search || '*',
+            per_page: pageOption.take,
+            page: pageOption.page,
+            query_by: 'name,category,subCategory',
+        });
     }
 }

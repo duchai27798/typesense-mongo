@@ -70,4 +70,8 @@ export class TypeSenseFeature<TSchema extends Document = Document> implements Se
                     .catch((e) => Logger.error(`${record.documentKey._id}: ${e}`));
         }
     }
+
+    get documents() {
+        return this._Collection.documents();
+    }
 }
