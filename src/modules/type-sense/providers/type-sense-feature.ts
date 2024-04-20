@@ -53,10 +53,7 @@ export class TypeSenseFeature<TSchema extends Document = Document> implements Se
     async syncData(record: ChangeStreamDocument<TSchema>) {
         switch (record.operationType) {
             case 'delete':
-                await this._Collection
-                    .documents(record.documentKey._id.toString())
-                    .delete()
-                    .catch((e) => Logger.error(e));
+                await this._Collection.documents(record.documentKey._id.toString()).delete();
                 break;
             case 'update':
                 await this._Collection

@@ -12,16 +12,28 @@ export class Product extends AbstractSchema {
     name: string;
 
     @Prop({ trim: true, required: true })
-    price: number;
+    category: string;
+
+    @Prop({ trim: true, required: true })
+    subCategory: string;
 
     @Prop({ trim: true })
-    description: string;
+    image: string;
 
     @Prop({ trim: true })
-    adjective: string;
+    link: string;
 
-    @Prop({ trim: true })
-    material: string;
+    @Prop({ trim: true, default: 0 })
+    ratings: number;
+
+    @Prop({ trim: true, default: 0 })
+    noOfRatings: number;
+
+    @Prop({ trim: true, default: 0 })
+    discountPrice: number;
+
+    @Prop({ trim: true, default: 0 })
+    actualPrice: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -9,15 +9,6 @@ import { ProductService } from '@/modules/product/product.service';
 export class ProductController {
     constructor(private readonly _ProductService: ProductService) {}
 
-    @Post('fake-data')
-    @HttpCode(HttpStatus.CREATED)
-    @ApiOkResponse({
-        type: MessageResponseDto,
-    })
-    async fake() {
-        return this._ProductService.fakeData();
-    }
-
     @Post('import-data/:filename')
     @HttpCode(HttpStatus.CREATED)
     @ApiOkResponse({

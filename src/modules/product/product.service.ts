@@ -1,6 +1,5 @@
 import fs from 'node:fs';
 
-import { faker } from '@faker-js/faker';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
@@ -27,25 +26,27 @@ export class ProductService extends ChangeStreamService<Product> {
         });
     }
 
-    async fakeData() {
-        const products = _.range(1000).map(
-            (): TProduct => ({
-                name: faker.commerce.productName(),
-                price: parseFloat(faker.commerce.price({ max: 10000, min: 5 })),
-                adjective: faker.commerce.productAdjective(),
-                material: faker.commerce.productMaterial(),
-                description: faker.commerce.productDescription(),
+    async importData(filename: string) {
+        const jsonData = await CsvUtils.csvToJson(`./data/${filename}.csv`);
+
+        const products = jsonData.map(
+            (product): TProduct => ({
+                name: _.get(product, 'name'),
+                category: _.get(product, 'main_category'),
+                subCategory: _.get(product, 'sub_category'),
+                image: _.get(product, 'image'),
+                link: _.get(product, 'link'),
+                ratings: _.toNumber(_.get(product, 'ratings')) || 0,
+                noOfRatings: _.toNumber(_.get(product, 'no_of_ratings')) || 0,
+                discountPrice: _.toNumber(_.replace(_.get(product, 'discount_price'), /[^0-9.-]+/g, '')) || 0,
+                actualPrice: _.toNumber(_.replace(_.get(product, 'actual_price'), /[^0-9.-]+/g, '')) || 0,
             }),
         );
 
-        await this._ProductModel.deleteMany();
+        await this._ProductModel.deleteMany({ subCategory: filename });
         await this._ProductModel.insertMany(plainToInstance(Product, products));
 
         return new SuccessDto('Fake products successfully', HttpStatus.CREATED);
-    }
-
-    async importData(filename: string) {
-        return CsvUtils.csvToJson(`./data/${filename}.csv`);
     }
 
     async readFileNames() {

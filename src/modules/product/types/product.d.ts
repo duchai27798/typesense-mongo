@@ -1,7 +1,11 @@
 export type TProduct = {
     name: string;
-    price: number;
-    description: string;
-    adjective: string;
-    material: string;
+    category: string;
+    subCategory: string;
+    image: string;
+    link: string;
+    ratings: number;
+    noOfRatings: number;
+    discountPrice: number;
+    actualPrice: number;
 };

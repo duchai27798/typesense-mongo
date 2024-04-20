@@ -11,17 +11,33 @@ export class ProductDto extends DefaultDataDto {
 
     @Expose()
     @ApiProperty()
-    price: number;
+    category: string;
 
     @Expose()
     @ApiProperty()
-    description: string;
+    subCategory: string;
 
     @Expose()
     @ApiProperty()
-    adjective: string;
+    image: string;
 
     @Expose()
     @ApiProperty()
-    material: string;
+    link: string;
+
+    @Expose()
+    @ApiProperty()
+    ratings: number;
+
+    @Expose()
+    @ApiProperty()
+    noOfRatings: number;
+
+    @Expose()
+    @ApiProperty()
+    discountPrice: number;
+
+    @Expose()
+    @ApiProperty()
+    actualPrice: number;
 }
