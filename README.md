@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://nestjs.com/img/logo-small.svg" width="130" alt="Nest Logo" /></a> <br/>
+  <img src="https://nestjs.com/img/logo-small.svg" width="130" alt="Nest Logo" /> <br/>
   <img src="https://typesense.org/docs/assets/img/mongodb.845c5a69.svg" alt="Typesense" />
 </p>
 <h4 align="center">
