@@ -1,21 +1,17 @@
-import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
+import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { Document } from 'bson';
 import { CollectionCreateSchema } from 'typesense/lib/Typesense/Collections';
 
-import { TypeSenseCoreSyncProvider } from '@/modules/type-sense/providers';
 import { TypeSenseFeatureProvider } from '@/modules/type-sense/providers/type-sense-feature.provider';
+import { TypeSenseCoreModule } from '@/modules/type-sense/type-sense-core.module';
 import { TypeSenseSyncOptions } from '@/modules/type-sense/types';
 
-@Global()
 @Module({})
 export class TypeSenseModule {
     static forRootSync(options: TypeSenseSyncOptions): DynamicModule {
-        const provider: Provider[] = TypeSenseCoreSyncProvider(options);
         return {
             module: TypeSenseModule,
-            imports: options.imports,
-            providers: provider,
-            exports: provider,
+            imports: [TypeSenseCoreModule.forRootSync(options)],
         };
     }
     static forFeature<TSchema extends Document = Document>(schema: CollectionCreateSchema): DynamicModule {

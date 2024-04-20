@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { Product, ProductSchema } from '@/modules/product/schemas/product.schema';
 import { ProductSearchSchema } from '@/modules/product/schemas/product-search.schema';
-import { TypeSenseModule } from '@/modules/type-sense/type-sense.module';
+import { TypeSenseModule } from '@/modules/type-sense';
 
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';

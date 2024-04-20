@@ -10,7 +10,7 @@ import { SuccessDto } from '@/dto/core';
 import { Product } from '@/modules/product/schemas/product.schema';
 import { ProductSearchSchema } from '@/modules/product/schemas/product-search.schema';
 import { TProduct } from '@/modules/product/types/product';
-import { SearchModel } from '@/modules/type-sense/interfaces';
+import { SearchModel } from '@/modules/type-sense';
 
 @Injectable()
 export class ProductService extends ChangeStreamService<Product> {
