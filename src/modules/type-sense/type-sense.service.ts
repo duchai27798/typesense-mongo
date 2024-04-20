@@ -1,8 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ChangeStreamDocument } from 'mongodb';
 import { Client } from 'typesense';
+import { CollectionFieldSchema } from 'typesense/lib/Typesense/Collection';
 import { CollectionCreateSchema } from 'typesense/lib/Typesense/Collections';
 import { ConfigurationOptions } from 'typesense/lib/Typesense/Configuration';
+import { CollectionDropFieldSchema } from 'typesense/src/Typesense/Collection';
 
 import { TYPE_SENSE_OPTIONS } from '@/modules/type-sense/constants';
 
@@ -24,10 +26,25 @@ export class TypeSenseService {
     }
 
     static async register(schema: CollectionCreateSchema) {
-        const isExited = await this._TypeSenseClient.collections(schema.name).exists();
+        const collection = this._TypeSenseClient.collections(schema.name);
 
-        if (isExited) {
-            await this._TypeSenseClient.collections(schema.name).delete();
+        if (await collection.exists()) {
+            const updatedFieldNames = schema.fields.map((fields) => fields.name);
+            const existedFields = (await collection.retrieve()).fields;
+            const existedFieldNames = existedFields.map((fields) => fields.name);
+            const deletedFields: CollectionDropFieldSchema[] = existedFields
+                .filter((field) => !updatedFieldNames.includes(field.name) && field.name !== 'id')
+                .map((field) => ({ name: field.name, drop: true }));
+            const newFields: CollectionFieldSchema[] = schema.fields.filter(
+                (field) => !existedFieldNames.includes(field.name) && field.name !== 'id',
+            );
+
+            if (deletedFields?.length || newFields?.length) {
+                await this._TypeSenseClient.collections(schema.name).update({
+                    fields: [...newFields, ...deletedFields],
+                });
+            }
+            return;
         }
 
         await this._TypeSenseClient.collections().create(schema);
