@@ -1,7 +1,7 @@
-import { Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger';
 
-import { MessageResponseDto } from '@/dto/core';
+import { MessageResponseDto, ResponseDto } from '@/dto/core';
 import { ProductService } from '@/modules/product/product.service';
 
 @Controller('products')
@@ -16,5 +16,27 @@ export class ProductController {
     })
     async fake() {
         return this._ProductService.fakeData();
+    }
+
+    @Post('import-data/:filename')
+    @HttpCode(HttpStatus.CREATED)
+    @ApiOkResponse({
+        type: MessageResponseDto,
+    })
+    @ApiParam({
+        name: 'filename',
+        type: String,
+    })
+    async importData(@Param('filename') filename: string) {
+        return this._ProductService.importData(filename);
+    }
+
+    @Get('filenames')
+    @HttpCode(HttpStatus.CREATED)
+    @ApiOkResponse({
+        type: ResponseDto(String, true),
+    })
+    async readFileNames() {
+        return this._ProductService.readFileNames();
     }
 }

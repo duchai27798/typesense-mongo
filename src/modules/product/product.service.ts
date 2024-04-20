@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import { faker } from '@faker-js/faker';
 import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -7,6 +9,7 @@ import { Model } from 'mongoose';
 
 import { ChangeStreamService } from '@/database';
 import { SuccessDto } from '@/dto/core';
+import { CsvUtils } from '@/helpers';
 import { Product } from '@/modules/product/schemas/product.schema';
 import { ProductSearchSchema } from '@/modules/product/schemas/product-search.schema';
 import { TProduct } from '@/modules/product/types/product';
@@ -39,5 +42,14 @@ export class ProductService extends ChangeStreamService<Product> {
         await this._ProductModel.insertMany(plainToInstance(Product, products));
 
         return new SuccessDto('Fake products successfully', HttpStatus.CREATED);
+    }
+
+    async importData(filename: string) {
+        return CsvUtils.csvToJson(`./data/${filename}.csv`);
+    }
+
+    async readFileNames() {
+        const filenames = fs.readdirSync('data').map((name) => name.replace(new RegExp(/.csv$/), ''));
+        return new SuccessDto(null, HttpStatus.OK, filenames);
     }
 }
